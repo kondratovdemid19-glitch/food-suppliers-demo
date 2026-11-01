@@ -59,7 +59,7 @@ npm run build
 
 Адрес прототипа: https://kondratovdemid19-glitch.github.io/food-suppliers-demo/
 
-Публикация выполняется через GitHub Actions после проверок зависимостей, сценариев и сборки. Путь подкаталога уже задан в `vite.config.ts`.
+Публикация выполняется через GitHub Pages (`gh-pages`) после проверок зависимостей, сценариев и сборки. Путь подкаталога уже задан в `vite.config.ts`.
 
 1. Опубликовать исходники этой папки в отдельный репозиторий. `node_modules` и `dist` исключены из Git.
 2. Подключить репозиторий к статическому хостингу: команда сборки `npm run build`, каталог публикации `dist`, Node.js 22.12+.
@@ -75,3 +75,6 @@ npm run build
 - `src/style.css` — адаптивное оформление.
 - `tests/app.test.ts` — пользовательские сценарии.
 - `docs/DECISIONS.md` — обоснование и принятые решения.
+
+
+Publishing layout: source code is in `main`; only the contents of `dist` and `.nojekyll` are published from `gh-pages` (root). Run the audit, tests and build before updating `gh-pages`.
