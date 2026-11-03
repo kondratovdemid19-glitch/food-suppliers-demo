@@ -9,7 +9,6 @@ class CatalogTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.catalog = Catalog(Path(self.tmp.name) / 'catalog.db')
     def tearDown(self):
-        self.catalog.close()
         self.tmp.cleanup()
     def test_sources_are_preserved(self):
         rows=self.catalog.search({})
@@ -28,7 +27,6 @@ class CatalogTests(unittest.TestCase):
         for params in [{'category':'other'},{'q':'a'*201},{'region':'a'*101},{'limit':'100000'}]:
             with self.assertRaises(BadRequest): self.catalog.search(params)
     def test_seed_is_repeatable(self):
-        self.catalog.close()
         self.catalog = Catalog(Path(self.tmp.name) / 'catalog.db')
         self.assertEqual(len(self.catalog.search({})),6)
 

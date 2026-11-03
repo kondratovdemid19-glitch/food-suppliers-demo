@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
 import mimetypes
+from contextlib import closing
 
 ROOT = Path(__file__).resolve().parents[1]
 CATEGORIES = {'ingredients', 'ready', 'packaging'}
@@ -35,13 +36,12 @@ class Catalog:
     def __init__(self, path=None):
         self.path=str(path or os.environ.get('CATALOG_DB', '/tmp/snabzhenie-catalog.sqlite3'))
         data=json.loads((ROOT/'data/suppliers.json').read_text())
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db:
             db.execute('CREATE TABLE IF NOT EXISTS suppliers (id TEXT PRIMARY KEY, payload TEXT NOT NULL, search_text TEXT NOT NULL)')
             db.execute('DELETE FROM suppliers')
             labels={'ingredients':'ингредиенты','ready':'готовая продукция','packaging':'упаковка'}
             db.executemany('INSERT INTO suppliers VALUES (?, ?, ?)',[(s['id'],json.dumps(s,ensure_ascii=False),s['name']+' '+s['description']+' '+' '.join(labels[c] for c in s['categories'])) for s in data])
-    def close(self):
-        pass
+            db.commit()
     def search(self, params):
         if set(params)-{'q','category','region','limit'}: raise BadRequest('Неизвестный параметр поиска')
         q=params.get('q','').strip()
