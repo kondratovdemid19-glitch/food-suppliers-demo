@@ -2,3 +2,6 @@ node_modules/
 dist/
 .DS_Store
 .pages-publish/
+
+__pycache__/
+*.sqlite3
